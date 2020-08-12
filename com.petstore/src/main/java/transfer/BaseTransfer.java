@@ -21,10 +21,6 @@ public class BaseTransfer {
         return buildCreateOrUpdateRequest(body).post(path);
     }
 
-    public Response put(Object body, String path) {
-        return buildCreateOrUpdateRequest(body).put(path);
-    }
-
     public Response postWithFormParams(String id, String formField1, String formValue1,
                                        String formField2, File formValue2, String path) {
         return given().spec(getRequestSpecificationMultipart()).log().all()
@@ -33,8 +29,16 @@ public class BaseTransfer {
                 .post(path, id);
     }
 
+    public Response put(Object body, String path) {
+        return buildCreateOrUpdateRequest(body).put(path);
+    }
+
     public Response get(String paramName, List<String> params, String path) {
         return given().urlEncodingEnabled(true).spec(getRequestSpecification()).log().all().queryParam(paramName, params).when().get(path);
+    }
+
+    public Response get(String id, String path) {
+        return given().spec(getRequestSpecification()).log().all().when().get(path, id);
     }
 
     private RequestSpecification buildCreateOrUpdateRequest(Object body) {

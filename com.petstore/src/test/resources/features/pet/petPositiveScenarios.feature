@@ -64,8 +64,11 @@ Feature: Add, update, delete and get pet data from the pet store service
     And Request executed with status code 200 in the response
     And Request executed with correct response
     When User upload image of the pet
-      | id    | additionalMetadata | file                                 |
-      | 93467 | pet photo          | src/test/resources/photos/photo2.JPG |
+      | additionalMetadata | file                                 |
+      | pet photo          | src/test/resources/photos/photo2.JPG |
+    And User provides id
+      | id    |
+      | 93467 |
     And User send "upload image" request
     Then Request executed with status code 200 in the response
     And Upload pet photo request executed with correct response
@@ -86,3 +89,28 @@ Feature: Add, update, delete and get pet data from the pet store service
       | sold                   |
       | available,sold         |
       | available,sold,pending |
+
+  @run
+  Scenario: Find pet by id
+    Given User provides id, name and status information
+      | id    | name | status    |
+      | 22345 | Rex  | available |
+    And User provides category information
+      | id  | name |
+      | 223 | dog  |
+    And User provides photo URLs
+      | src/test/resources/photos/photo1.JPG |
+      | src/test/resources/photos/photo2.JPG |
+    And User provides tags information
+      | id  | name  |
+      | 247 | dog   |
+      | 248 | corgi |
+    And User send "add new pet" request
+    And Request executed with status code 200 in the response
+    And Request executed with correct response
+    When User provides id
+      | id    |
+      | 22345 |
+    And User send "find pet by id" request
+    Then Request executed with status code 200 in the response
+    And Request executed with correct response

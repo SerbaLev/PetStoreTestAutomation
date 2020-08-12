@@ -64,10 +64,15 @@ public class PetStepDefinitions {
         stepsExecutor.performUpdatePetRequest(stepsExecutor.addOrUpdatePetRequest());
     }
 
+    @When("User provides id$")
+    public void userProvideId(DataTable table) {
+        Map<String, String> data = table.asMaps().get(0);
+        stepsExecutor.petId(data.get("id"));
+    }
+
     @When("User upload image of the pet$")
     public void userUploadImageOfThePet(DataTable table) {
         Map<String, String> data = table.asMaps().get(0);
-        stepsExecutor.petId(data.get("id"));
         stepsExecutor.uploadImageRequest()
                 .additionalMetadata(data.get("additionalMetadata"))
                 .file(new File(data.get("file")));
@@ -82,8 +87,13 @@ public class PetStepDefinitions {
     }
 
     @When("User send \"find pet by status\" request")
-    public void userSendRequest() {
+    public void userSendFindPetByStatusRequest() {
         stepsExecutor.performFindPetByStatusRequest();
+    }
+
+    @When("User send \"find pet by id\" request")
+    public void userSendFindPetByIdRequest() {
+        stepsExecutor.performFindPetByIdRequest(stepsExecutor.petId());
     }
 
     @Then("^Request executed with correct response")

@@ -14,6 +14,7 @@ import net.thucydides.core.annotations.Step;
 import org.junit.Assert;
 import transfer.Context;
 import transfer.endpoints.PetStoreRestApi;
+import transfer.endpoints.pet.ByPetId;
 import transfer.endpoints.pet.FindByStatus;
 import transfer.endpoints.pet.Pet;
 import transfer.endpoints.pet.UploadImage;
@@ -39,6 +40,7 @@ public class PetStepsExecutor {
     private final Pet petEndpoint = new PetStoreRestApi().getPet();
     private final UploadImage uploadImageEndpoint = new PetStoreRestApi().getPet().getByPetId().getUploadImage();
     private final FindByStatus byPetStatusEndpoint = new PetStoreRestApi().getPet().getFindByStatus();
+    private final ByPetId byPetIdEndpoint = new PetStoreRestApi().getPet().getByPetId();
 
     private AddOrUpdatePetRequestDTO addOrUpdatePetRequest = new AddOrUpdatePetRequestDTO();
     private UploadImageRequestDTO uploadImageRequest = new UploadImageRequestDTO();
@@ -84,6 +86,13 @@ public class PetStepsExecutor {
         actualStatusCode = context.getResponseStatusCode();
     }
 
+    @Step("Perform GET request with pet`s id in path")
+    public void performFindPetByIdRequest(String id) {
+        Context<PetResponseDTO> context = byPetIdEndpoint.get(id);
+        actualPetResponse = context.getObjectFromResponse();
+        actualStatusCode = context.getResponseStatusCode();
+    }
+
     @Step("Verify that status code is correct")
     public void verifyStatusCode(int expectedStatusCode) {
         assertThat("Status codes do not match. Expected: " + expectedStatusCode + " but was: " + actualStatusCode,
@@ -104,4 +113,5 @@ public class PetStepsExecutor {
                     petStatuses.contains(pet.status())));
         }
     }
+
 }
