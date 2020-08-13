@@ -1,6 +1,7 @@
 package stepsExecutor.pet;
 
 import dto.request.pet.AddOrUpdatePetRequestDTO;
+import dto.request.pet.UpdateWithFormByIdRequestDTO;
 import dto.request.pet.UploadImageRequestDTO;
 import dto.response.pet.ErrorOrNotificationDTO;
 import dto.response.pet.PetResponseDTO;
@@ -44,6 +45,7 @@ public class PetStepsExecutor {
 
     private AddOrUpdatePetRequestDTO addOrUpdatePetRequest = new AddOrUpdatePetRequestDTO();
     private UploadImageRequestDTO uploadImageRequest = new UploadImageRequestDTO();
+    private UpdateWithFormByIdRequestDTO updateWithFormByIdRequest = new UpdateWithFormByIdRequestDTO();
 
 
     private ErrorOrNotificationDTO expectedErrorOrNotificationResponse = new ErrorOrNotificationDTO();
@@ -57,7 +59,7 @@ public class PetStepsExecutor {
     private String petId;
 
     @Step("Perform POST request with provided data in body section")
-    public <T> void performAddNewPetRequest(T request) {
+    public void performAddNewPetRequest(AddOrUpdatePetRequestDTO request) {
         Context<PetResponseDTO> context = petEndpoint.post(request);
         actualPetResponse = context.getObjectFromResponse();
         actualErrorOrNotificationResponse = context.getErrorOrNotification();
@@ -65,7 +67,7 @@ public class PetStepsExecutor {
     }
 
     @Step("Perform PUT request with provided data in body section")
-    public <T> void performUpdatePetRequest(T request) {
+    public void performUpdatePetRequest(AddOrUpdatePetRequestDTO request) {
         Context<PetResponseDTO> context = petEndpoint.put(request);
         actualPetResponse = context.getObjectFromResponse();
         actualStatusCode = context.getResponseStatusCode();
@@ -75,6 +77,14 @@ public class PetStepsExecutor {
     public void performImageUploadRequest(String petId, String formField1, String formValue1, String formField2, File formValue2) {
         Context<ErrorOrNotificationDTO> context = uploadImageEndpoint.post(petId, formField1, formValue1, formField2, formValue2);
         actualErrorOrNotificationResponse = context.getObjectFromResponse();
+        actualStatusCode = context.getResponseStatusCode();
+    }
+
+    @Step("Perform POST request to update pet information with form")
+    public void performUpdatePetWithFormRequest(String id, String formField1, String formValue1, String formField2, String formValue2) {
+        Context<PetResponseDTO> context = byPetIdEndpoint.post(id, formField1, formValue1, formField2, formValue2);
+        actualPetResponse = context.getObjectFromResponse();
+        actualErrorOrNotificationResponse = context.getErrorOrNotification();
         actualStatusCode = context.getResponseStatusCode();
     }
 
@@ -90,6 +100,17 @@ public class PetStepsExecutor {
     public void performFindPetByIdRequest(String id) {
         Context<PetResponseDTO> context = byPetIdEndpoint.get(id);
         actualPetResponse = context.getObjectFromResponse();
+        actualErrorOrNotificationResponse = context.getErrorOrNotification();
+        actualStatusCode = context.getResponseStatusCode();
+    }
+
+    @Step("Perform DELETE request with pet`s id in path")
+    public void performDeletePetByIdRequest(String id) {
+        Context<PetResponseDTO> context = byPetIdEndpoint.delete(id);
+        if (!context.getResponseAsString().isEmpty()) {
+            actualPetResponse = context.getObjectFromResponse();
+            actualErrorOrNotificationResponse = context.getErrorOrNotification();
+        }
         actualStatusCode = context.getResponseStatusCode();
     }
 

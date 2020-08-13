@@ -78,12 +78,26 @@ public class PetStepDefinitions {
                 .file(new File(data.get("file")));
     }
 
+    @When("User update name and status with form$")
+    public void userUpdateNameAndStatusWithForm(DataTable table) {
+        Map<String, String> data = table.asMaps().get(0);
+        stepsExecutor.updateWithFormByIdRequest()
+                .name(data.get("name"))
+                .status(data.get("status"));
+    }
+
     @When("User send \"upload image\" request")
     public void userSendUploadImageRequest() {
         stepsExecutor.performImageUploadRequest(stepsExecutor.petId(),
                 "additionalMetadata",
                 stepsExecutor.uploadImageRequest().additionalMetadata(),
                 "file", stepsExecutor.uploadImageRequest().file());
+    }
+
+    @When("User send \"update pet information with form\" request")
+    public void userSendUpdateWithFormRequest() {
+        stepsExecutor.performUpdatePetWithFormRequest(stepsExecutor.petId(), "name", stepsExecutor.updateWithFormByIdRequest().name(),
+                "status", stepsExecutor.updateWithFormByIdRequest().status());
     }
 
     @When("User send \"find pet by status\" request")
@@ -94,6 +108,11 @@ public class PetStepDefinitions {
     @When("User send \"find pet by id\" request")
     public void userSendFindPetByIdRequest() {
         stepsExecutor.performFindPetByIdRequest(stepsExecutor.petId());
+    }
+
+    @When("User send \"delete pet by id\" request")
+    public void userSendDeleteByIdRequest() {
+        stepsExecutor.performDeletePetByIdRequest(stepsExecutor.petId());
     }
 
     @Then("^Request executed with correct response")
@@ -108,8 +127,8 @@ public class PetStepDefinitions {
         stepsExecutor.verifyBodyOfTheResponse(stepsExecutor.actualPetResponse(), stepsExecutor.expectedPetResponse());
     }
 
-    @Then("^Upload pet photo request executed with correct response$")
-    public void petPhotoUploadedSuccessfully(DataTable table) {
+    @Then("^Request executed with correct notification or error in the response$")
+    public void verifyCorrectResponseNotificationOrError(DataTable table) {
         Map<String, String> data = table.asMaps().get(0);
         stepsExecutor.expectedErrorOrNotificationResponse()
                 .code(data.get("code"))
@@ -119,7 +138,7 @@ public class PetStepDefinitions {
     }
 
     @Then("Request executed with status code {int} in the response")
-    public void requestFailedWithCorrectErrorAndStatusCode(int statusCode) {
+    public void requestExecutedWithCorrectStatusCode(int statusCode) {
         stepsExecutor.verifyStatusCode(statusCode);
     }
 

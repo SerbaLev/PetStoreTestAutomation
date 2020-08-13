@@ -1,6 +1,5 @@
 package dto.request.pet;
 
-import dto.data.Status;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 public class UpdateWithFormByIdRequestDTO {
 
-    private Status status;
+    private String status;
     private String name;
 
 }

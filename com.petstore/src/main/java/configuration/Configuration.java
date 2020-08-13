@@ -26,7 +26,8 @@ public class Configuration {
     }
 
     public enum Options {
-        BASE_PATH("base.path");
+        BASE_PATH("base.path"),
+        API_KEY("api.key");
 
         private final String value;
 
